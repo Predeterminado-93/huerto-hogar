@@ -20,6 +20,7 @@
                <li><a href="registro.html">Registro</a> </li>
                <li><a href="carrito.html">Carrito</a> </li>
                <li><a href="administracion.html">Administración</a> </li>
+               <li><a href="perfil.html">Mi perfil</a> </li>
             </ul> 
         </nav>
     </header>
@@ -29,6 +30,23 @@
 
         <section>
             <h3>Todos nuestros productos</h3>
+
+            <div>
+                <label for="buscador-productos">Buscar producto:</label>
+                <input type="text" id="buscador-productos" placeholder="Escribe el nombre del producto">
+            </div>
+
+            <div>
+                <label for="filtro-categoria">Filtrar por categoría:</label>
+                <select id="filtro-categoria">
+                    <option value="">Todas las categorías</option>
+                    <option value="Frutas Frescas">Frutas Frescas</option>
+                    <option value="Verduras Orgánicas">Verduras Orgánicas</option>
+                    <option value="Productos Lácteos">Productos Lácteos</option>
+                    <option value="Productos Orgánicos">Productos Orgánicos</option>
+                </select>
+            </div>
+
             <div id="contenedor-productos"></div>
         </section>
     </main>

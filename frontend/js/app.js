@@ -30,7 +30,12 @@ function agregarAlCarrito(producto) {
     });
 
     if (productoExistente) {
-        productoExistente.cantidad++;
+        if (productoExistente.cantidad < producto.stock) {
+            productoExistente.cantidad++;
+        } else {
+            alert("No puedes superar el stock disponible.");
+            return;
+        }
     } else {
         carrito.push({
             ...producto,
@@ -43,20 +48,25 @@ function agregarAlCarrito(producto) {
 }
 
 const contenedor = document.getElementById("contenedor-productos");
+const buscador = document.getElementById("buscador-productos");
+const filtroCategoria = document.getElementById("filtro-categoria");
 
-if (contenedor) {
-    const esInicio = window.location.pathname.endsWith("index.html") || window.location.pathname.endsWith("/");
+function mostrarProductos(listaProductos) {
+    contenedor.innerHTML = "";
 
-    const productosMostrar = esInicio ? productos.slice(0, 3) : productos;
+    if (listaProductos.length === 0) {
+        contenedor.innerHTML = "<p>No se encontraron productos.</p>";
+        return;
+    }
 
-    productosMostrar.forEach(function(producto) {
+    listaProductos.forEach(function(producto) {
         const tarjeta = document.createElement("article");
 
         let estado;
         let claseEstado;
         let boton;
 
-        if (producto.disponible) {
+        if (producto.stock > 0 && producto.disponible) {
             estado = "Disponible";
             claseEstado = "disponible";
             boton = `<button class="boton-carrito">Agregar al carrito</button>`;
@@ -66,29 +76,19 @@ if (contenedor) {
             boton = `<button disabled>Producto agotado</button>`;
         }
 
-        if (esInicio) {
-            tarjeta.innerHTML = `
-                <h3>${producto.nombre}</h3>
-                <p>Precio: $${producto.precio}</p>
-                <p class="${claseEstado}">Estado: ${estado}</p>
-                <a href="detalle-producto.html?id=${producto.id}">Ver detalle</a>
-                ${boton}
-            `;
-        } else {
-            tarjeta.innerHTML = `
-                <h3>${producto.nombre}</h3>
-                <p>${producto.descripcion}</p>
-                <p>Precio: $${producto.precio}</p>
-                <p>Categoría: ${producto.categoria}</p>
-                <p class="${claseEstado}">Estado: ${estado}</p>
-                <a href="detalle-producto.html?id=${producto.id}">Ver detalle</a>
-                ${boton}
-            `;
-        }
+        tarjeta.innerHTML = `
+            <h3>${producto.nombre}</h3>
+            <p>${producto.descripcion}</p>
+            <p>Precio: $${producto.precio}</p>
+            <p>Categoría: ${producto.categoria}</p>
+            <p class="${claseEstado}">Estado: ${estado}</p>
+            <a href="detalle-producto.html?id=${producto.id}">Ver detalle</a>
+            ${boton}
+        `;
 
         contenedor.appendChild(tarjeta);
 
-        if (producto.disponible) {
+        if (producto.stock > 0 && producto.disponible) {
             const botonCarrito = tarjeta.querySelector(".boton-carrito");
 
             botonCarrito.addEventListener("click", function() {
@@ -96,6 +96,38 @@ if (contenedor) {
             });
         }
     });
+}
+
+function filtrarProductos() {
+    const textoBusqueda = buscador ? buscador.value.toLowerCase() : "";
+    const categoriaSeleccionada = filtroCategoria ? filtroCategoria.value : "";
+
+    const productosFiltrados = productos.filter(function(producto) {
+        const coincideNombre = producto.nombre.toLowerCase().includes(textoBusqueda);
+        const coincideCategoria = categoriaSeleccionada === "" || producto.categoria === categoriaSeleccionada;
+
+        return coincideNombre && coincideCategoria;
+    });
+
+    mostrarProductos(productosFiltrados);
+}
+
+if (contenedor) {
+    const esInicio = window.location.pathname.endsWith("index.html") || window.location.pathname.endsWith("/");
+
+    if (esInicio) {
+        mostrarProductos(productos.slice(0, 3));
+    } else {
+        mostrarProductos(productos);
+    }
+
+    if (buscador) {
+        buscador.addEventListener("input", filtrarProductos);
+    }
+
+    if (filtroCategoria) {
+        filtroCategoria.addEventListener("change", filtrarProductos);
+    }
 }
 
 const mensajeSesion = document.getElementById("mensaje-sesion");

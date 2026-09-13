@@ -12,6 +12,7 @@ const categoriaProducto = document.getElementById("categoria-producto");
 const estadoProducto = document.getElementById("estado-producto");
 const botonAgregar = document.getElementById("boton-agregar-detalle");
 const mensajeDetalle = document.getElementById("mensaje-detalle");
+const cantidadProducto = document.getElementById("cantidad-producto");
 
 if (producto) {
     nombreProducto.textContent = producto.nombre;
@@ -19,22 +20,50 @@ if (producto) {
     precioProducto.textContent = "Precio: $" + producto.precio;
     categoriaProducto.textContent = "Categoría: " + producto.categoria;
 
-    if (producto.disponible) {
+    if (producto.stock > 0 && producto.disponible) {
         estadoProducto.textContent = "Estado: Disponible";
         estadoProducto.className = "disponible";
+        cantidadProducto.max = producto.stock;
 
         botonAgregar.addEventListener("click", function() {
-            agregarAlCarrito(producto);
+            const cantidad = Number(cantidadProducto.value);
+
+            if (cantidad < 1 || cantidad > producto.stock) {
+                mensajeDetalle.textContent = "La cantidad debe estar entre 1 y " + producto.stock + ".";
+                return;
+            }
+
+            const productoExistente = carrito.find(function(item) {
+                return item.id === producto.id;
+            });
+
+            if (productoExistente) {
+                if (productoExistente.cantidad + cantidad > producto.stock) {
+                    mensajeDetalle.textContent = "La cantidad supera el stock disponible.";
+                    return;
+                }
+
+                productoExistente.cantidad += cantidad;
+            } else {
+                carrito.push({
+                    ...producto,
+                    cantidad: cantidad
+                });
+            }
+
+            localStorage.setItem("carrito", JSON.stringify(carrito));
             mensajeDetalle.textContent = "Producto agregado al carrito.";
         });
     } else {
         estadoProducto.textContent = "Estado: Agotado";
         estadoProducto.className = "agotado";
         botonAgregar.disabled = true;
+        cantidadProducto.disabled = true;
         botonAgregar.textContent = "Producto agotado";
     }
 } else {
     nombreProducto.textContent = "Producto no encontrado";
     descripcionProducto.textContent = "No se encontró el producto solicitado.";
     botonAgregar.disabled = true;
+    cantidadProducto.disabled = true;
 }
