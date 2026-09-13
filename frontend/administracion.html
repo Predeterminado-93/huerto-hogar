@@ -31,25 +31,43 @@
 
             <form id="formulario-producto">
                 <div>
+                    <label for="codigo-producto">Código del producto:</label>
+                    <input type="text" id="codigo-producto" maxlength="50" required>
+                </div>
+
+                <div>
                     <label for="nombre-producto">Nombre del producto:</label>
                     <input type="text" id="nombre-producto" maxlength="100" required>
                 </div>
 
                 <div>
+                    <label for="descripcion-producto">Descripción:</label>
+                    <textarea id="descripcion-producto" maxlength="500"></textarea>
+                </div>
+
+                <div>
                     <label for="precio-producto">Precio:</label>
-                    <input type="number" id="precio-producto" min="1" required>
+                    <input type="number" id="precio-producto" min="0" step="0.01" required>
+                </div>
+
+                <div>
+                    <label for="stock-producto">Stock:</label>
+                    <input type="number" id="stock-producto" min="0" step="1" required>
+                </div>
+
+                <div>
+                    <label for="stock-critico-producto">Stock crítico:</label>
+                    <input type="number" id="stock-critico-producto" min="0" step="1">
                 </div>
 
                 <div>
                     <label for="categoria-producto">Categoría:</label>
-                    <input type="text" id="categoria-producto" maxlength="50" required>
-                </div>
-
-                <div>
-                    <label for="disponible-producto">Disponible:</label>
-                    <select id="disponible-producto">
-                        <option value="true">Sí</option>
-                        <option value="false">No</option>
+                    <select id="categoria-producto" required>
+                        <option value="">Selecciona una categoría</option>
+                        <option value="Frutas Frescas">Frutas Frescas</option>
+                        <option value="Verduras Orgánicas">Verduras Orgánicas</option>
+                        <option value="Productos Orgánicos">Productos Orgánicos</option>
+                        <option value="Productos Lácteos">Productos Lácteos</option>
                     </select>
                 </div>
 
