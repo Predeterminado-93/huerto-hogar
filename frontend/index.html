@@ -3,37 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HuertoHogar</title>
+    <title>HuertoHogar | Inicio</title>
+    <link rel="stylesheet" href="css/estilos.css">
 </head>
 <body>
     <header>
         <h1>HuertoHogar</h1>
-        <nav><a href="index.html">Inicio</a> |
-        <a href="productos.html">Productos</a> |
-        <a href="blog.html">Blog</a> |
-        <a href="contacto.html">Contacto</a> |
-        <a href="nosotros.html">Nosotros</a> |
-        <a href="login.html">Login</a> |
-        <a href="registro.html">Registro</a> |
-        <a href="carrito.html">Carrito</a>  <nav>
+
+        <nav>
+            <ul>
+               <li><a href="index.html">Inicio</a> </li>
+               <li><a href="productos.html">Productos</a> </li>
+               <li><a href="blog.html">Blog</a> </li>
+               <li><a href="contacto.html">Contacto</a> </li>
+               <li><a href="nosotros.html">Nosotros</a> </li>
+               <li><a href="login.html">Login</a> </li>
+               <li><a href="registro.html">Registro</a> </li>
+               <li><a href="carrito.html">Carrito</a> </li>
+            </ul>
+        </nav>
     </header>
+
     <main>
         <section>
-            <h2>HuertoHogar a tu casa.</h2>
+            <h2>Bienvenido a HuertoHogar</h2>
             <p>
-                Desde el campo hasta tu puerta, productos frescos y de calidad.
+                Encuentra productos frescos y naturales directamente del campo
+                hasta tu hogar.
             </p>
-            <a href="productos.html">Ver productos</a>
+            <a href="productos.html">Explorar productos</a>
+        </section>
+
+        <section>
+            <h2>Explora nuestras categorías</h2>
+
+            <article>
+                <h3>Frutas frescas</h3>
+                <p>Frutas seleccionadas, frescas y de excelente calidad.</p>
+                <a href="productos.html">Ver frutas</a>
+            </article>
+
+            <article>
+                <h3>Verduras orgánicas</h3>
+                <p>Verduras frescas para una alimentación saludable.</p>
+                <a href="productos.html">Ver verduras</a>
+            </article>
+
+            <article>
+                <h3>Otros productos</h3>
+                <p>Productos naturales y alimentos seleccionados.</p>
+                <a href="productos.html">Ver productos</a>
+            </article>
+        </section>
+
+        <section>
+            <h2>Productos destacados</h2>
+            <div id="contenedor-productos"></div>
         </section>
     </main>
+
     <footer>
-        <p> 
+        <p>
             HuertoHogar | Desde el campo hasta tu puerta, productos frescos y de calidad.
         </p>
         <p>
             2026 HuertoHogar
         </p>
     </footer>
-    
+
+    <script src="js/app.js"></script>
 </body>
 </html>
