@@ -21,13 +21,16 @@ header h1 {
 }
 
 header nav ul {
-    margin: 20px 0 0 0;
-    padding: 0;
-    list-style: none;
+    margin:20px 0 0;
+    padding:0;
+    list-style:none;
+    display:flex;
+    flex-wrap:wrap;
+    gap:15px;
 }
 
 header nav li {
-    margin-bottom: 8px;
+    margin-bottom:0;
 }
 
 header nav a {
@@ -240,4 +243,21 @@ main article img {
     display:block;
     margin-bottom:20px;
     border-radius:8px;
+}
+.boton-navegacion {
+    display:inline-block;
+    margin-top:10px;
+    padding:10px 15px;
+    border:none;
+    border-radius:5px;
+    background-color:#2E8B57;
+    color:white;
+    cursor:pointer;
+    text-decoration:none;
+    font-family:Arial,sans-serif;
+    font-size:13.3333px;
+}
+
+.boton-navegacion:hover {
+    background-color:#8B4513;
 }
