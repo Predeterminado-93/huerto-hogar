@@ -21,6 +21,7 @@ function mostrarProductosAdministracion() {
         const elemento = document.createElement("article");
 
         elemento.innerHTML = `
+            <img src="${producto.imagen || "img/producto-generico.jpg"}" alt="${producto.nombre}">
             <h3>${producto.nombre}</h3>
             <p>Código: ${producto.codigo || "Sin código"}</p>
             <p>Descripción: ${producto.descripcion}</p>
@@ -28,6 +29,7 @@ function mostrarProductosAdministracion() {
             <p>Stock: ${producto.stock ?? "No informado"}</p>
             <p>Stock crítico: ${producto.stockCritico ?? "No informado"}</p>
             <p>Categoría: ${producto.categoria}</p>
+            <p>Imagen: ${producto.imagen || "Sin imagen"}</p>
             <p>Estado: ${producto.stock > 0 ? "Disponible" : "Agotado"}</p>
             <p>${producto.stock <= producto.stockCritico ? "Alerta: stock crítico" : "Stock suficiente"}</p>
             <button class="boton-editar-producto">Editar</button>
@@ -45,6 +47,7 @@ function mostrarProductosAdministracion() {
             document.getElementById("stock-producto").value = producto.stock;
             document.getElementById("stock-critico-producto").value = producto.stockCritico;
             document.getElementById("categoria-producto").value = producto.categoria;
+            document.getElementById("imagen-producto").value = producto.imagen || "";
 
             indiceEdicion = indice;
             botonGuardar.textContent = "Guardar cambios";
@@ -104,6 +107,7 @@ formularioProducto.addEventListener("submit", function(evento) {
     const stock = Number(document.getElementById("stock-producto").value);
     const stockCritico = Number(document.getElementById("stock-critico-producto").value || 0);
     const categoria = document.getElementById("categoria-producto").value;
+    const imagen = document.getElementById("imagen-producto").value.trim();
 
     if (codigo === "" || nombre === "" || precio < 0 || stock < 0 || categoria === "") {
         alert("Completa correctamente los campos obligatorios.");
@@ -131,7 +135,8 @@ formularioProducto.addEventListener("submit", function(evento) {
             stock: stock,
             stockCritico: stockCritico,
             categoria: categoria,
-            disponible: stock > 0
+            disponible: stock > 0,
+            imagen: imagen || "img/producto-generico.jpg"
         });
     } else {
         productos[indiceEdicion].codigo = codigo;
@@ -142,6 +147,7 @@ formularioProducto.addEventListener("submit", function(evento) {
         productos[indiceEdicion].stockCritico = stockCritico;
         productos[indiceEdicion].categoria = categoria;
         productos[indiceEdicion].disponible = stock > 0;
+        productos[indiceEdicion].imagen = imagen || "img/producto-generico.jpg";
     }
 
     guardarProductos();
