@@ -1,5 +1,10 @@
 const formularioProducto = document.getElementById("formulario-producto");
 const listaAdministracion = document.getElementById("lista-administracion");
+const listaUsuarios = document.getElementById("lista-usuarios");
+const botonGuardar = document.getElementById("boton-guardar-producto");
+const botonCancelar = document.getElementById("boton-cancelar-edicion");
+
+let indiceEdicion = -1;
 
 function guardarProductos() {
     localStorage.setItem("productos", JSON.stringify(productos));
@@ -24,10 +29,29 @@ function mostrarProductosAdministracion() {
             <p>Stock crítico: ${producto.stockCritico ?? "No informado"}</p>
             <p>Categoría: ${producto.categoria}</p>
             <p>Estado: ${producto.stock > 0 ? "Disponible" : "Agotado"}</p>
+            <p>${producto.stock <= producto.stockCritico ? "Alerta: stock crítico" : "Stock suficiente"}</p>
+            <button class="boton-editar-producto">Editar</button>
             <button class="boton-eliminar-producto">Eliminar</button>
         `;
 
+        const botonEditar = elemento.querySelector(".boton-editar-producto");
         const botonEliminar = elemento.querySelector(".boton-eliminar-producto");
+
+        botonEditar.addEventListener("click", function() {
+            document.getElementById("codigo-producto").value = producto.codigo || "";
+            document.getElementById("nombre-producto").value = producto.nombre;
+            document.getElementById("descripcion-producto").value = producto.descripcion;
+            document.getElementById("precio-producto").value = producto.precio;
+            document.getElementById("stock-producto").value = producto.stock;
+            document.getElementById("stock-critico-producto").value = producto.stockCritico;
+            document.getElementById("categoria-producto").value = producto.categoria;
+
+            indiceEdicion = indice;
+            botonGuardar.textContent = "Guardar cambios";
+            botonCancelar.hidden = false;
+
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
 
         botonEliminar.addEventListener("click", function() {
             productos.splice(indice, 1);
@@ -37,6 +61,37 @@ function mostrarProductosAdministracion() {
 
         listaAdministracion.appendChild(elemento);
     });
+}
+
+function mostrarUsuarios() {
+    listaUsuarios.innerHTML = "";
+
+    const usuarioGuardado = localStorage.getItem("usuarioRegistrado");
+
+    if (!usuarioGuardado) {
+        listaUsuarios.innerHTML = "<p>No hay usuarios registrados.</p>";
+        return;
+    }
+
+    const usuario = JSON.parse(usuarioGuardado);
+
+    const elemento = document.createElement("article");
+
+    elemento.innerHTML = `
+        <h3>Usuario registrado</h3>
+        <p><strong>Nombre:</strong> ${usuario.nombre}</p>
+        <p><strong>Correo:</strong> ${usuario.correo}</p>
+        <p><strong>Estado:</strong> ${localStorage.getItem("sesionActiva") === "true" ? "Sesión activa" : "Sesión inactiva"}</p>
+    `;
+
+    listaUsuarios.appendChild(elemento);
+}
+
+function limpiarFormulario() {
+    formularioProducto.reset();
+    indiceEdicion = -1;
+    botonGuardar.textContent = "Agregar producto";
+    botonCancelar.hidden = true;
 }
 
 formularioProducto.addEventListener("submit", function(evento) {
@@ -55,8 +110,8 @@ formularioProducto.addEventListener("submit", function(evento) {
         return;
     }
 
-    const codigoExistente = productos.some(function(producto) {
-        return producto.codigo === codigo;
+    const codigoExistente = productos.some(function(producto, indice) {
+        return producto.codigo === codigo && indice !== indiceEdicion;
     });
 
     if (codigoExistente) {
@@ -64,23 +119,39 @@ formularioProducto.addEventListener("submit", function(evento) {
         return;
     }
 
-    productos.push({
-        id: Math.max(...productos.map(function(producto) {
-            return producto.id;
-        }), 0) + 1,
-        codigo: codigo,
-        nombre: nombre,
-        descripcion: descripcion || "Producto agregado desde administración.",
-        precio: precio,
-        stock: stock,
-        stockCritico: stockCritico,
-        categoria: categoria,
-        disponible: stock > 0
-    });
+    if (indiceEdicion === -1) {
+        productos.push({
+            id: Math.max(...productos.map(function(producto) {
+                return producto.id;
+            }), 0) + 1,
+            codigo: codigo,
+            nombre: nombre,
+            descripcion: descripcion || "Producto agregado desde administración.",
+            precio: precio,
+            stock: stock,
+            stockCritico: stockCritico,
+            categoria: categoria,
+            disponible: stock > 0
+        });
+    } else {
+        productos[indiceEdicion].codigo = codigo;
+        productos[indiceEdicion].nombre = nombre;
+        productos[indiceEdicion].descripcion = descripcion || "Producto agregado desde administración.";
+        productos[indiceEdicion].precio = precio;
+        productos[indiceEdicion].stock = stock;
+        productos[indiceEdicion].stockCritico = stockCritico;
+        productos[indiceEdicion].categoria = categoria;
+        productos[indiceEdicion].disponible = stock > 0;
+    }
 
     guardarProductos();
-    formularioProducto.reset();
+    limpiarFormulario();
     mostrarProductosAdministracion();
 });
 
+botonCancelar.addEventListener("click", function() {
+    limpiarFormulario();
+});
+
 mostrarProductosAdministracion();
+mostrarUsuarios();

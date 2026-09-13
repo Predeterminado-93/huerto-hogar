@@ -1,21 +1,32 @@
 const productosIniciales = [
-    { id: 1, codigo: "FH001", nombre: "Manzanas Fuji", precio: 1700, categoria: "Frutas Frescas", descripcion: "Manzanas frescas de textura crujiente y sabor dulce.", stock: 20, stockCritico: 5, disponible: true },
-    { id: 2, codigo: "FH002", nombre: "Pera asiática", precio: 1500, categoria: "Frutas Frescas", descripcion: "Pera asiática fresca, jugosa y de sabor suave.", stock: 15, stockCritico: 5, disponible: true },
-    { id: 3, codigo: "VH001", nombre: "Palta Hass Chilena", precio: 5500, categoria: "Verduras Orgánicas", descripcion: "Palta Hass chilena de excelente calidad y textura cremosa.", stock: 12, stockCritico: 4, disponible: true },
-    { id: 4, codigo: "VH002", nombre: "Tomate Limachino", precio: 1500, categoria: "Verduras Orgánicas", descripcion: "Tomate Limachino fresco, ideal para ensaladas y preparaciones.", stock: 18, stockCritico: 5, disponible: true },
-    { id: 5, codigo: "LA001", nombre: "Mantequilla", precio: 2000, categoria: "Productos Lácteos", descripcion: "Mantequilla de textura suave y sabor tradicional.", stock: 10, stockCritico: 3, disponible: true },
-    { id: 6, codigo: "LA002", nombre: "Leche Entera", precio: 1050, categoria: "Productos Lácteos", descripcion: "Leche entera fresca para consumo diario.", stock: 25, stockCritico: 5, disponible: true },
-    { id: 7, codigo: "OP001", nombre: "Almendras", precio: 12500, categoria: "Productos Orgánicos", descripcion: "Almendras seleccionadas, ideales para una alimentación saludable.", stock: 8, stockCritico: 2, disponible: true },
-    { id: 8, codigo: "OP002", nombre: "Cacao en polvo", precio: 4500, categoria: "Productos Orgánicos", descripcion: "Cacao en polvo para repostería y preparaciones caseras.", stock: 14, stockCritico: 4, disponible: true },
-    { id: 9, codigo: "OP003", nombre: "Huevos", precio: 12500, categoria: "Productos Orgánicos", descripcion: "Huevos frescos para distintas preparaciones.", stock: 30, stockCritico: 6, disponible: true }
+    { id: 1, codigo: "FH001", nombre: "Manzanas Fuji", precio: 1700, categoria: "Frutas Frescas", descripcion: "Manzanas frescas de textura crujiente y sabor dulce.", stock: 20, stockCritico: 5, disponible: true, imagen: "img/manzana_fuji.png" },
+    { id: 2, codigo: "FH002", nombre: "Pera asiática", precio: 1500, categoria: "Frutas Frescas", descripcion: "Pera asiática fresca, jugosa y de sabor suave.", stock: 15, stockCritico: 5, disponible: true, imagen: "img/pera_asiatica.png" },
+    { id: 3, codigo: "VH001", nombre: "Palta Hass Chilena", precio: 5500, categoria: "Verduras Orgánicas", descripcion: "Palta Hass chilena de excelente calidad y textura cremosa.", stock: 12, stockCritico: 4, disponible: true, imagen: "img/palta_hass.png" },
+    { id: 4, codigo: "VH002", nombre: "Tomate Limachino", precio: 1500, categoria: "Verduras Orgánicas", descripcion: "Tomate Limachino fresco, ideal para ensaladas y preparaciones.", stock: 18, stockCritico: 5, disponible: true, imagen: "img/tomate_limachino.png" },
+    { id: 5, codigo: "LA001", nombre: "Mantequilla", precio: 2000, categoria: "Productos Lácteos", descripcion: "Mantequilla de textura suave y sabor tradicional.", stock: 10, stockCritico: 3, disponible: true, imagen: "img/mantequilla.png" },
+    { id: 6, codigo: "LA002", nombre: "Leche Entera", precio: 1050, categoria: "Productos Lácteos", descripcion: "Leche entera fresca para consumo diario.", stock: 25, stockCritico: 5, disponible: true, imagen: "img/leche.png" },
+    { id: 7, codigo: "OP001", nombre: "Almendras", precio: 12500, categoria: "Productos Orgánicos", descripcion: "Almendras seleccionadas, ideales para una alimentación saludable.", stock: 8, stockCritico: 2, disponible: true, imagen: "img/almendras.png" },
+    { id: 8, codigo: "OP002", nombre: "Cacao en polvo", precio: 4500, categoria: "Productos Orgánicos", descripcion: "Cacao en polvo para repostería y preparaciones caseras.", stock: 14, stockCritico: 4, disponible: true, imagen: "img/cacao.png" },
+    { id: 9, codigo: "OP003", nombre: "Huevos", precio: 12500, categoria: "Productos Orgánicos", descripcion: "Huevos frescos para distintas preparaciones.", stock: 30, stockCritico: 6, disponible: true, imagen: "img/huevos.png" }
 ];
 
 const productosGuardados = localStorage.getItem("productos");
 const productosGuardadosParseados = productosGuardados ? JSON.parse(productosGuardados) : [];
 
 const productos = productosGuardadosParseados.length > 0
-    ? productosGuardadosParseados
+    ? productosGuardadosParseados.map(function(producto) {
+        const productoInicial = productosIniciales.find(function(item) {
+            return item.id === producto.id;
+        });
+
+        return {
+            ...productoInicial,
+            ...producto
+        };
+    })
     : productosIniciales;
+
+guardarProductos();
 
 const carritoGuardado = localStorage.getItem("carrito");
 const carrito = carritoGuardado ? JSON.parse(carritoGuardado) : [];
@@ -77,6 +88,7 @@ function mostrarProductos(listaProductos) {
         }
 
         tarjeta.innerHTML = `
+            <img src="${producto.imagen || "img/producto-generico.jpg"}" alt="${producto.nombre}">
             <h3>${producto.nombre}</h3>
             <p>${producto.descripcion}</p>
             <p>Precio: $${producto.precio}</p>
