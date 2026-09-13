@@ -88,6 +88,107 @@
 
         <section>
             <h2>Gestión de usuarios</h2>
+
+            <form id="formulario-usuario">
+                <div>
+                    <label for="run-usuario">RUN:</label>
+                    <input
+                        type="text"
+                        id="run-usuario"
+                        placeholder="Ejemplo: 123456789"
+                        maxlength="9"
+                        required
+                    >
+                </div>
+
+                <div>
+                    <label for="nombre-usuario">Nombre:</label>
+                    <input
+                        type="text"
+                        id="nombre-usuario"
+                        maxlength="50"
+                        required
+                    >
+                </div>
+
+                <div>
+                    <label for="apellidos-usuario">Apellidos:</label>
+                    <input
+                        type="text"
+                        id="apellidos-usuario"
+                        maxlength="100"
+                        required
+                    >
+                </div>
+
+                <div>
+                    <label for="correo-usuario">Correo electrónico:</label>
+                    <input
+                        type="email"
+                        id="correo-usuario"
+                        maxlength="100"
+                        placeholder="usuario@duoc.cl"
+                        required
+                    >
+                </div>
+
+                <div>
+                    <label for="fecha-nacimiento-usuario">Fecha de nacimiento:</label>
+                    <input
+                        type="date"
+                        id="fecha-nacimiento-usuario"
+                    >
+                </div>
+
+                <div>
+                    <label for="tipo-usuario">Tipo de usuario:</label>
+                    <select id="tipo-usuario" required>
+                        <option value="">Selecciona un tipo</option>
+                        <option value="Administrador">Administrador</option>
+                        <option value="Cliente">Cliente</option>
+                        <option value="Vendedor">Vendedor</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="region-usuario">Región:</label>
+                    <select id="region-usuario" required>
+                        <option value="">Selecciona una región</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="comuna-usuario">Comuna:</label>
+                    <select id="comuna-usuario" required>
+                        <option value="">Selecciona una comuna</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="direccion-usuario">Dirección:</label>
+                    <textarea
+                        id="direccion-usuario"
+                        maxlength="300"
+                        required
+                    ></textarea>
+                </div>
+
+                <button type="submit" id="boton-guardar-usuario">
+                    Agregar usuario
+                </button>
+
+                <button
+                    type="button"
+                    id="boton-cancelar-edicion-usuario"
+                    hidden
+                >
+                    Cancelar edición
+                </button>
+            </form>
+        </section>
+
+        <section>
+            <h2>Usuarios registrados</h2>
             <div id="lista-usuarios"></div>
         </section>
     </main>

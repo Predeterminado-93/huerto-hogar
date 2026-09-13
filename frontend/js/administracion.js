@@ -1,6 +1,5 @@
 const formularioProducto = document.getElementById("formulario-producto");
 const listaAdministracion = document.getElementById("lista-administracion");
-const listaUsuarios = document.getElementById("lista-usuarios");
 const botonGuardar = document.getElementById("boton-guardar-producto");
 const botonCancelar = document.getElementById("boton-cancelar-edicion");
 
@@ -66,37 +65,6 @@ function mostrarProductosAdministracion() {
     });
 }
 
-function mostrarUsuarios() {
-    listaUsuarios.innerHTML = "";
-
-    const usuarioGuardado = localStorage.getItem("usuarioRegistrado");
-
-    if (!usuarioGuardado) {
-        listaUsuarios.innerHTML = "<p>No hay usuarios registrados.</p>";
-        return;
-    }
-
-    const usuario = JSON.parse(usuarioGuardado);
-
-    const elemento = document.createElement("article");
-
-    elemento.innerHTML = `
-        <h3>Usuario registrado</h3>
-        <p><strong>Nombre:</strong> ${usuario.nombre}</p>
-        <p><strong>Correo:</strong> ${usuario.correo}</p>
-        <p><strong>Estado:</strong> ${localStorage.getItem("sesionActiva") === "true" ? "Sesión activa" : "Sesión inactiva"}</p>
-    `;
-
-    listaUsuarios.appendChild(elemento);
-}
-
-function limpiarFormulario() {
-    formularioProducto.reset();
-    indiceEdicion = -1;
-    botonGuardar.textContent = "Agregar producto";
-    botonCancelar.hidden = true;
-}
-
 formularioProducto.addEventListener("submit", function(evento) {
     evento.preventDefault();
 
@@ -151,13 +119,234 @@ formularioProducto.addEventListener("submit", function(evento) {
     }
 
     guardarProductos();
-    limpiarFormulario();
+    limpiarFormularioProducto();
     mostrarProductosAdministracion();
 });
 
+function limpiarFormularioProducto() {
+    formularioProducto.reset();
+    indiceEdicion = -1;
+    botonGuardar.textContent = "Agregar producto";
+    botonCancelar.hidden = true;
+}
+
 botonCancelar.addEventListener("click", function() {
-    limpiarFormulario();
+    limpiarFormularioProducto();
 });
 
+
+const formularioUsuario = document.getElementById("formulario-usuario");
+const listaUsuarios = document.getElementById("lista-usuarios");
+const botonGuardarUsuario = document.getElementById("boton-guardar-usuario");
+const botonCancelarUsuario = document.getElementById("boton-cancelar-edicion-usuario");
+
+let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+let indiceEdicionUsuario = -1;
+
+const regionesYComunas = {
+    "Arica y Parinacota": ["Arica", "Camarones", "Putre", "General Lagos"],
+    "Tarapacá": ["Iquique", "Alto Hospicio", "Pozo Almonte"],
+    "Antofagasta": ["Antofagasta", "Calama", "Tocopilla"],
+    "Atacama": ["Copiapó", "Caldera", "Vallenar"],
+    "Coquimbo": ["La Serena", "Coquimbo", "Ovalle"],
+    "Valparaíso": ["Valparaíso", "Viña del Mar", "Quilpué"],
+    "Metropolitana": ["Santiago", "Maipú", "Puente Alto"],
+    "O'Higgins": ["Rancagua", "San Fernando", "Rengo"],
+    "Maule": ["Talca", "Curicó", "Linares"],
+    "Ñuble": ["Chillán", "San Carlos", "Bulnes"],
+    "Biobío": ["Concepción", "Los Ángeles", "Talcahuano"],
+    "La Araucanía": ["Temuco", "Villarrica", "Angol"],
+    "Los Ríos": ["Valdivia", "La Unión", "Río Bueno"],
+    "Los Lagos": ["Puerto Montt", "Osorno", "Castro"],
+    "Aysén": ["Coyhaique", "Puerto Aysén", "Chile Chico"],
+    "Magallanes": ["Punta Arenas", "Puerto Natales", "Porvenir"]
+};
+
+function cargarRegiones() {
+    const selectorRegion = document.getElementById("region-usuario");
+
+    Object.keys(regionesYComunas).forEach(function(region) {
+        const opcion = document.createElement("option");
+        opcion.value = region;
+        opcion.textContent = region;
+        selectorRegion.appendChild(opcion);
+    });
+}
+
+function cargarComunas() {
+    const selectorRegion = document.getElementById("region-usuario");
+    const selectorComuna = document.getElementById("comuna-usuario");
+
+    selectorComuna.innerHTML = '<option value="">Selecciona una comuna</option>';
+
+    const comunas = regionesYComunas[selectorRegion.value] || [];
+
+    comunas.forEach(function(comuna) {
+        const opcion = document.createElement("option");
+        opcion.value = comuna;
+        opcion.textContent = comuna;
+        selectorComuna.appendChild(opcion);
+    });
+}
+
+function guardarUsuarios() {
+    localStorage.setItem("usuarios", JSON.stringify(usuarios));
+}
+
+function validarRun(run) {
+    return /^[0-9]{7,9}$/.test(run);
+}
+
+function validarCorreo(correo) {
+    return /^[^\s@]+@(duoc\.cl|profesor\.duoc\.cl|gmail\.com)$/.test(correo);
+}
+
+function mostrarUsuarios() {
+    listaUsuarios.innerHTML = "";
+
+    if (usuarios.length === 0) {
+        listaUsuarios.innerHTML = "<p>No hay usuarios registrados.</p>";
+        return;
+    }
+
+    usuarios.forEach(function(usuario, indice) {
+        const elemento = document.createElement("article");
+
+        elemento.innerHTML = `
+            <h3>${usuario.nombre} ${usuario.apellidos}</h3>
+            <p>RUN: ${usuario.run}</p>
+            <p>Correo: ${usuario.correo}</p>
+            <p>Fecha de nacimiento: ${usuario.fechaNacimiento || "No informada"}</p>
+            <p>Tipo de usuario: ${usuario.tipo}</p>
+            <p>Región: ${usuario.region}</p>
+            <p>Comuna: ${usuario.comuna}</p>
+            <p>Dirección: ${usuario.direccion}</p>
+            <button class="boton-editar-usuario">Editar</button>
+            <button class="boton-eliminar-usuario">Eliminar</button>
+        `;
+
+        elemento.querySelector(".boton-editar-usuario").addEventListener("click", function() {
+            document.getElementById("run-usuario").value = usuario.run;
+            document.getElementById("nombre-usuario").value = usuario.nombre;
+            document.getElementById("apellidos-usuario").value = usuario.apellidos;
+            document.getElementById("correo-usuario").value = usuario.correo;
+            document.getElementById("fecha-nacimiento-usuario").value = usuario.fechaNacimiento || "";
+            document.getElementById("tipo-usuario").value = usuario.tipo;
+            document.getElementById("region-usuario").value = usuario.region;
+
+            cargarComunas();
+
+            document.getElementById("comuna-usuario").value = usuario.comuna;
+            document.getElementById("direccion-usuario").value = usuario.direccion;
+
+            indiceEdicionUsuario = indice;
+            botonGuardarUsuario.textContent = "Guardar cambios";
+            botonCancelarUsuario.hidden = false;
+
+            window.scrollTo({ top: document.getElementById("formulario-usuario").offsetTop, behavior: "smooth" });
+        });
+
+        elemento.querySelector(".boton-eliminar-usuario").addEventListener("click", function() {
+            usuarios.splice(indice, 1);
+            guardarUsuarios();
+            mostrarUsuarios();
+        });
+
+        listaUsuarios.appendChild(elemento);
+    });
+}
+
+function limpiarFormularioUsuario() {
+    formularioUsuario.reset();
+    document.getElementById("comuna-usuario").innerHTML = '<option value="">Selecciona una comuna</option>';
+    indiceEdicionUsuario = -1;
+    botonGuardarUsuario.textContent = "Agregar usuario";
+    botonCancelarUsuario.hidden = true;
+}
+
+formularioUsuario.addEventListener("submit", function(evento) {
+    evento.preventDefault();
+
+    const run = document.getElementById("run-usuario").value.trim();
+    const nombre = document.getElementById("nombre-usuario").value.trim();
+    const apellidos = document.getElementById("apellidos-usuario").value.trim();
+    const correo = document.getElementById("correo-usuario").value.trim().toLowerCase();
+    const fechaNacimiento = document.getElementById("fecha-nacimiento-usuario").value;
+    const tipo = document.getElementById("tipo-usuario").value;
+    const region = document.getElementById("region-usuario").value;
+    const comuna = document.getElementById("comuna-usuario").value;
+    const direccion = document.getElementById("direccion-usuario").value.trim();
+
+    if (!validarRun(run)) {
+        alert("El RUN debe contener entre 7 y 9 números, sin puntos ni guion.");
+        return;
+    }
+
+    if (nombre === "" || nombre.length > 50) {
+        alert("El nombre es obligatorio y debe tener máximo 50 caracteres.");
+        return;
+    }
+
+    if (apellidos === "" || apellidos.length > 100) {
+        alert("Los apellidos son obligatorios y deben tener máximo 100 caracteres.");
+        return;
+    }
+
+    if (!validarCorreo(correo) || correo.length > 100) {
+        alert("El correo debe ser @duoc.cl, @profesor.duoc.cl o @gmail.com.");
+        return;
+    }
+
+    if (tipo === "" || region === "" || comuna === "") {
+        alert("Selecciona el tipo de usuario, región y comuna.");
+        return;
+    }
+
+    if (direccion === "" || direccion.length > 300) {
+        alert("La dirección es obligatoria y debe tener máximo 300 caracteres.");
+        return;
+    }
+
+    const runExistente = usuarios.some(function(usuario, indice) {
+        return usuario.run === run && indice !== indiceEdicionUsuario;
+    });
+
+    if (runExistente) {
+        alert("Ya existe un usuario registrado con ese RUN.");
+        return;
+    }
+
+    const usuario = {
+        run: run,
+        nombre: nombre,
+        apellidos: apellidos,
+        correo: correo,
+        fechaNacimiento: fechaNacimiento,
+        tipo: tipo,
+        region: region,
+        comuna: comuna,
+        direccion: direccion
+    };
+
+    if (indiceEdicionUsuario === -1) {
+        usuarios.push(usuario);
+    } else {
+        usuarios[indiceEdicionUsuario] = usuario;
+    }
+
+    guardarUsuarios();
+    limpiarFormularioUsuario();
+    mostrarUsuarios();
+
+    alert("Usuario guardado correctamente.");
+});
+
+botonCancelarUsuario.addEventListener("click", function() {
+    limpiarFormularioUsuario();
+});
+
+document.getElementById("region-usuario").addEventListener("change", cargarComunas);
+
+cargarRegiones();
 mostrarProductosAdministracion();
 mostrarUsuarios();
