@@ -20,6 +20,8 @@
                <li><a href="login.html">Login</a> </li>
                <li><a href="registro.html">Registro</a> </li>
                <li><a href="carrito.html">Carrito</a> </li>
+               <li><a href="administracion.html">Administración</a> </li>
+               <li><a href="perfil.html">Mi perfil</a> </li>
             </ul>
         </nav>
     </header>
@@ -30,26 +32,114 @@
 
             <form id="formulario-registro">
                 <div>
-                    <label for="nombre">Nombre completo:</label>
-                    <input type="text" id="nombre" name="nombre" maxlength="100" required>
+                    <label for="run">RUN:</label>
+                    <input
+                        type="text"
+                        id="run"
+                        name="run"
+                        maxlength="9"
+                        placeholder="Ejemplo: 12345678"
+                        required
+                    >
+                    <p id="error-run"></p>
+                </div>
+
+                <div>
+                    <label for="nombre">Nombre:</label>
+                    <input
+                        type="text"
+                        id="nombre"
+                        name="nombre"
+                        maxlength="50"
+                        required
+                    >
                     <p id="error-nombre"></p>
                 </div>
 
                 <div>
+                    <label for="apellidos">Apellidos:</label>
+                    <input
+                        type="text"
+                        id="apellidos"
+                        name="apellidos"
+                        maxlength="100"
+                        required
+                    >
+                    <p id="error-apellidos"></p>
+                </div>
+
+                <div>
                     <label for="correo">Correo electrónico:</label>
-                    <input type="email" id="correo" name="correo" maxlength="100" required>
+                    <input
+                        type="email"
+                        id="correo"
+                        name="correo"
+                        maxlength="100"
+                        required
+                    >
                     <p id="error-correo"></p>
                 </div>
 
                 <div>
+                    <label for="fecha-nacimiento">Fecha de nacimiento:</label>
+                    <input
+                        type="date"
+                        id="fecha-nacimiento"
+                        name="fecha-nacimiento"
+                    >
+                    <p id="error-fecha-nacimiento"></p>
+                </div>
+
+                <div>
+                    <label for="region">Región:</label>
+                    <select id="region" name="region" required>
+                        <option value="">Selecciona una región</option>
+                    </select>
+                    <p id="error-region"></p>
+                </div>
+
+                <div>
+                    <label for="comuna">Comuna:</label>
+                    <select id="comuna" name="comuna" required>
+                        <option value="">Selecciona una comuna</option>
+                    </select>
+                    <p id="error-comuna"></p>
+                </div>
+
+                <div>
+                    <label for="direccion">Dirección:</label>
+                    <textarea
+                        id="direccion"
+                        name="direccion"
+                        maxlength="300"
+                        required
+                    ></textarea>
+                    <p id="error-direccion"></p>
+                </div>
+
+                <div>
                     <label for="contrasena">Contraseña:</label>
-                    <input type="password" id="contrasena" name="contrasena" minlength="4" maxlength="10" required>
+                    <input
+                        type="password"
+                        id="contrasena"
+                        name="contrasena"
+                        minlength="4"
+                        maxlength="10"
+                        required
+                    >
                     <p id="error-contrasena"></p>
                 </div>
 
                 <div>
                     <label for="confirmar-contrasena">Confirmar contraseña:</label>
-                    <input type="password" id="confirmar-contrasena" name="confirmar-contrasena" minlength="4" maxlength="10" required>
+                    <input
+                        type="password"
+                        id="confirmar-contrasena"
+                        name="confirmar-contrasena"
+                        minlength="4"
+                        maxlength="10"
+                        required
+                    >
                     <p id="error-confirmar-contrasena"></p>
                 </div>
 
@@ -67,7 +157,8 @@
         <p>HuertoHogar | Desde el campo hasta tu puerta, productos frescos y de calidad.</p>
         <p>2026 HuertoHogar</p>
     </footer>
+
     <script src="js/registro.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
-

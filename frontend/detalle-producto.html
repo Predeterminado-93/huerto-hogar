@@ -8,8 +8,7 @@
 </head>
 <body>
     <header>
-        <h1>HuertoHogar</h1>
-
+        <h1>Detalle del producto</h1>
         <nav>
             <ul>
                <li><a href="index.html">Inicio</a> </li>
@@ -20,27 +19,24 @@
                <li><a href="login.html">Login</a> </li>
                <li><a href="registro.html">Registro</a> </li>
                <li><a href="carrito.html">Carrito</a> </li>
+               <li><a href="administracion.html">Administración</a> </li>
+               <li><a href="perfil.html">Mi perfil</a> </li>
             </ul>
         </nav>
     </header>
 
     <main>
         <section>
-            <h2>Ficha del producto</h2>
+            <h2 id="nombre-producto">Producto</h2>
 
-            <article>
-                <h3 id="nombre-producto">Detalle del producto</h3>
+            <img id="imagen-producto" src="" alt="Imagen del producto">
 
-                <p id="descripcion-producto"></p>
-                <p id="precio-producto"></p>
-                <p id="categoria-producto"></p>
-                <p id="estado-producto"></p>
+            <p id="descripcion-producto"></p>
+            <p id="precio-producto"></p>
+            <p id="categoria-producto"></p>
+            <p id="estado-producto"></p>
 
-                <button id="boton-agregar-detalle">Agregar al carrito</button>
-                <p id="mensaje-detalle"></p>
-
-                <a href="productos.html">Volver al catálogo</a>
-            </article>
+            <a href="productos.html" class="boton-navegacion">Volver al catálogo</a>
         </section>
     </main>
 

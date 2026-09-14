@@ -1,111 +1,283 @@
 const productosIniciales = [
-    { id: 1, codigo: "FH001", nombre: "Manzanas Fuji", precio: 1700, categoria: "Frutas Frescas", descripcion: "Manzanas frescas de textura crujiente y sabor dulce.", stock: 20, stockCritico: 5, disponible: true },
-    { id: 2, codigo: "FH002", nombre: "Pera asiática", precio: 1500, categoria: "Frutas Frescas", descripcion: "Pera asiática fresca, jugosa y de sabor suave.", stock: 15, stockCritico: 5, disponible: true },
-    { id: 3, codigo: "VH001", nombre: "Palta Hass Chilena", precio: 5500, categoria: "Verduras Orgánicas", descripcion: "Palta Hass chilena de excelente calidad y textura cremosa.", stock: 12, stockCritico: 4, disponible: true },
-    { id: 4, codigo: "VH002", nombre: "Tomate Limachino", precio: 1500, categoria: "Verduras Orgánicas", descripcion: "Tomate Limachino fresco, ideal para ensaladas y preparaciones.", stock: 18, stockCritico: 5, disponible: true },
-    { id: 5, codigo: "LA001", nombre: "Mantequilla", precio: 2000, categoria: "Productos Lácteos", descripcion: "Mantequilla de textura suave y sabor tradicional.", stock: 10, stockCritico: 3, disponible: true },
-    { id: 6, codigo: "LA002", nombre: "Leche Entera", precio: 1050, categoria: "Productos Lácteos", descripcion: "Leche entera fresca para consumo diario.", stock: 25, stockCritico: 5, disponible: true },
-    { id: 7, codigo: "OP001", nombre: "Almendras", precio: 12500, categoria: "Productos Orgánicos", descripcion: "Almendras seleccionadas, ideales para una alimentación saludable.", stock: 8, stockCritico: 2, disponible: true },
-    { id: 8, codigo: "OP002", nombre: "Cacao en polvo", precio: 4500, categoria: "Productos Orgánicos", descripcion: "Cacao en polvo para repostería y preparaciones caseras.", stock: 14, stockCritico: 4, disponible: true },
-    { id: 9, codigo: "OP003", nombre: "Huevos", precio: 12500, categoria: "Productos Orgánicos", descripcion: "Huevos frescos para distintas preparaciones.", stock: 30, stockCritico: 6, disponible: true }
+    {
+        id: 1,
+        codigo: "FRU001",
+        nombre: "Manzanas",
+        descripcion: "Manzanas frescas cultivadas en Chile.",
+        precio: 1500,
+        stock: 20,
+        stockCritico: 5,
+        categoria: "Frutas",
+        disponible: true,
+        imagen: "img/manzanas.jpg"
+    },
+    {
+        id: 2,
+        codigo: "FRU002",
+        nombre: "Naranjas",
+        descripcion: "Naranjas jugosas y naturales.",
+        precio: 1800,
+        stock: 15,
+        stockCritico: 5,
+        categoria: "Frutas",
+        disponible: true,
+        imagen: "img/naranjas.jpg"
+    },
+    {
+        id: 3,
+        codigo: "VER001",
+        nombre: "Lechugas",
+        descripcion: "Lechugas frescas cosechadas recientemente.",
+        precio: 1000,
+        stock: 10,
+        stockCritico: 3,
+        categoria: "Verduras",
+        disponible: true,
+        imagen: "img/lechugas.jpg"
+    },
+    {
+        id: 4,
+        codigo: "VER002",
+        nombre: "Tomates",
+        descripcion: "Tomates frescos ideales para ensaladas.",
+        precio: 2000,
+        stock: 12,
+        stockCritico: 4,
+        categoria: "Verduras",
+        disponible: true,
+        imagen: "img/tomates.jpg"
+    },
+    {
+        id: 5,
+        codigo: "NAT001",
+        nombre: "Miel natural",
+        descripcion: "Miel natural producida en campos chilenos.",
+        precio: 4500,
+        stock: 8,
+        stockCritico: 2,
+        categoria: "Productos naturales",
+        disponible: true,
+        imagen: "img/miel.jpg"
+    }
 ];
 
 const productosGuardados = localStorage.getItem("productos");
-const productosGuardadosParseados = productosGuardados ? JSON.parse(productosGuardados) : [];
+const productosGuardadosParseados = productosGuardados
+    ? JSON.parse(productosGuardados)
+    : [];
 
 const productos = productosGuardadosParseados.length > 0
-    ? productosGuardadosParseados
+    ? productosGuardadosParseados.map(function(producto) {
+        const productoInicial = productosIniciales.find(function(item) {
+            return item.id === producto.id;
+        });
+
+        return {
+            ...productoInicial,
+            ...producto
+        };
+    })
     : productosIniciales;
 
-const carritoGuardado = localStorage.getItem("carrito");
-const carrito = carritoGuardado ? JSON.parse(carritoGuardado) : [];
+localStorage.setItem("productos", JSON.stringify(productos));
 
-function guardarProductos() {
-    localStorage.setItem("productos", JSON.stringify(productos));
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+function guardarCarrito() {
+    localStorage.setItem("carrito", JSON.stringify(carrito));
 }
 
-function agregarAlCarrito(producto) {
+function agregarAlCarrito(producto, cantidad) {
     const productoExistente = carrito.find(function(item) {
         return item.id === producto.id;
     });
 
+    const cantidadActual = productoExistente
+        ? productoExistente.cantidad
+        : 0;
+
+    if (cantidadActual + cantidad > producto.stock) {
+        alert("No puedes agregar más unidades que el stock disponible.");
+        return;
+    }
+
     if (productoExistente) {
-        productoExistente.cantidad++;
+        productoExistente.cantidad += cantidad;
     } else {
         carrito.push({
-            ...producto,
-            cantidad: 1
+            id: producto.id,
+            nombre: producto.nombre,
+            precio: producto.precio,
+            imagen: producto.imagen,
+            cantidad: cantidad
         });
     }
 
-    localStorage.setItem("carrito", JSON.stringify(carrito));
+    guardarCarrito();
     alert("Producto agregado al carrito.");
 }
 
-const contenedor = document.getElementById("contenedor-productos");
+function crearTarjetaProducto(producto, mostrarInformacionCompleta) {
+    const elemento = document.createElement("article");
+    elemento.dataset.categoria = producto.categoria;
 
-if (contenedor) {
-    const esInicio = window.location.pathname.endsWith("index.html") || window.location.pathname.endsWith("/");
+    const estadoDisponible = producto.stock > 0 && producto.disponible;
 
-    const productosMostrar = esInicio ? productos.slice(0, 3) : productos;
+    elemento.innerHTML = `
+        <img src="${producto.imagen || "img/producto-generico.jpg"}" alt="${producto.nombre}">
+        <h3>${producto.nombre}</h3>
+        ${mostrarInformacionCompleta ? `<p>${producto.descripcion}</p>` : ""}
+        <p>Precio: $${producto.precio}</p>
+        <p class="${estadoDisponible ? "disponible" : "agotado"}">
+            ${estadoDisponible ? "Disponible" : "Agotado"}
+        </p>
+        <label for="cantidad-${producto.id}">Cantidad:</label>
+        <input
+            type="number"
+            id="cantidad-${producto.id}"
+            min="1"
+            max="${producto.stock}"
+            value="1"
+            ${!estadoDisponible ? "disabled" : ""}
+        >
+        <button ${!estadoDisponible ? "disabled" : ""}>
+            Agregar al carrito
+        </button>
+        <a href="detalle-producto.html?id=${producto.id}">
+            Ver detalle
+        </a>
+    `;
 
-    productosMostrar.forEach(function(producto) {
-        const tarjeta = document.createElement("article");
+    const boton = elemento.querySelector("button");
+    const inputCantidad = elemento.querySelector("input");
 
-        let estado;
-        let claseEstado;
-        let boton;
+    if (boton) {
+        boton.addEventListener("click", function() {
+            const cantidad = Number(inputCantidad.value);
 
-        if (producto.disponible) {
-            estado = "Disponible";
-            claseEstado = "disponible";
-            boton = `<button class="boton-carrito">Agregar al carrito</button>`;
-        } else {
-            estado = "Agotado";
-            claseEstado = "agotado";
-            boton = `<button disabled>Producto agotado</button>`;
+            if (cantidad < 1 || cantidad > producto.stock) {
+                alert("Ingresa una cantidad válida.");
+                return;
+            }
+
+            agregarAlCarrito(producto, cantidad);
+        });
+    }
+
+    return elemento;
+}
+
+function mostrarProductos() {
+    const contenedor = document.getElementById("contenedor-productos");
+
+    if (!contenedor) {
+        return;
+    }
+
+    contenedor.innerHTML = "";
+
+    const esInicio = window.location.pathname.endsWith("index.html")
+        || window.location.pathname.endsWith("/");
+
+    if (esInicio) {
+        productos.slice(0, 3).forEach(function(producto) {
+            const tarjeta = crearTarjetaProducto(producto, false);
+            contenedor.appendChild(tarjeta);
+        });
+
+        return;
+    }
+
+    const categorias = [];
+
+    productos.forEach(function(producto) {
+        if (!categorias.includes(producto.categoria)) {
+            categorias.push(producto.categoria);
         }
+    });
 
-        if (esInicio) {
-            tarjeta.innerHTML = `
-                <h3>${producto.nombre}</h3>
-                <p>Precio: $${producto.precio}</p>
-                <p class="${claseEstado}">Estado: ${estado}</p>
-                <a href="detalle-producto.html?id=${producto.id}">Ver detalle</a>
-                ${boton}
-            `;
-        } else {
-            tarjeta.innerHTML = `
-                <h3>${producto.nombre}</h3>
-                <p>${producto.descripcion}</p>
-                <p>Precio: $${producto.precio}</p>
-                <p>Categoría: ${producto.categoria}</p>
-                <p class="${claseEstado}">Estado: ${estado}</p>
-                <a href="detalle-producto.html?id=${producto.id}">Ver detalle</a>
-                ${boton}
-            `;
-        }
+    categorias.forEach(function(categoria) {
+        const seccion = document.createElement("section");
+        const titulo = document.createElement("h2");
+        const contenedorCategoria = document.createElement("div");
 
-        contenedor.appendChild(tarjeta);
+        titulo.textContent = categoria;
+        contenedorCategoria.className = "grupo-categoria";
 
-        if (producto.disponible) {
-            const botonCarrito = tarjeta.querySelector(".boton-carrito");
-
-            botonCarrito.addEventListener("click", function() {
-                agregarAlCarrito(producto);
+        productos
+            .filter(function(producto) {
+                return producto.categoria === categoria;
+            })
+            .forEach(function(producto) {
+                const tarjeta = crearTarjetaProducto(producto, true);
+                contenedorCategoria.appendChild(tarjeta);
             });
-        }
+
+        seccion.appendChild(titulo);
+        seccion.appendChild(contenedorCategoria);
+        contenedor.appendChild(seccion);
     });
 }
 
-const mensajeSesion = document.getElementById("mensaje-sesion");
+mostrarProductos();
 
-if (mensajeSesion) {
-    const sesionActiva = localStorage.getItem("sesionActiva");
-
-    if (sesionActiva === "true") {
-        mensajeSesion.textContent = "Has iniciado sesión correctamente.";
-    } else {
-        mensajeSesion.textContent = "No has iniciado sesión.";
-    }
+function obtenerUsuarioActual() {
+    return JSON.parse(localStorage.getItem("usuarioRegistrado"));
 }
+
+function obtenerRolActual() {
+    const usuario = obtenerUsuarioActual();
+
+    return usuario ? usuario.tipo : null;
+}
+
+function usuarioTieneSesion() {
+    return localStorage.getItem("sesionActiva") === "true";
+}
+
+function cerrarSesion() {
+    localStorage.removeItem("sesionActiva");
+    localStorage.removeItem("usuarioRegistrado");
+    window.location.href = "login.html";
+}
+
+function usuarioPuedeAcceder(rolesPermitidos) {
+    if (!usuarioTieneSesion()) {
+        return false;
+    }
+
+    const rolActual = obtenerRolActual();
+
+    return rolesPermitidos.includes(rolActual);
+}
+
+function configurarMenuPorRol() {
+    const usuario = usuarioTieneSesion()
+    ? obtenerUsuarioActual()
+    : null;
+    const rol = usuario ? usuario.tipo : null;
+
+    const enlacesAdministracion = document.querySelectorAll('a[href="administracion.html"]');
+    const enlacesLogin = document.querySelectorAll('a[href="login.html"]');
+    const enlacesRegistro = document.querySelectorAll('a[href="registro.html"]');
+    const enlacesPerfil = document.querySelectorAll('a[href="perfil.html"]');
+
+    enlacesAdministracion.forEach(function(enlace) {
+        enlace.parentElement.hidden = !usuario
+            || (rol !== "Administrador" && rol !== "Vendedor");
+    });
+
+    enlacesLogin.forEach(function(enlace) {
+        enlace.parentElement.hidden = usuario !== null;
+    });
+
+    enlacesRegistro.forEach(function(enlace) {
+        enlace.parentElement.hidden = usuario !== null;
+    });
+
+    enlacesPerfil.forEach(function(enlace) {
+        enlace.parentElement.hidden = usuario === null;
+    });
+}
+
+configurarMenuPorRol();

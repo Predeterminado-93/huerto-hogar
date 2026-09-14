@@ -3,7 +3,7 @@ const formularioLogin = document.getElementById("formulario-login");
 formularioLogin.addEventListener("submit", function(evento) {
     evento.preventDefault();
 
-    const correo = document.getElementById("correo").value.trim();
+    const correo = document.getElementById("correo").value.trim().toLowerCase();
     const contrasena = document.getElementById("contrasena").value;
 
     const errorCorreo = document.getElementById("error-correo");
@@ -40,23 +40,24 @@ formularioLogin.addEventListener("submit", function(evento) {
         formularioValido = false;
     }
 
-    if (formularioValido) {
-        const usuarioGuardado = localStorage.getItem("usuarioRegistrado");
-
-        if (!usuarioGuardado) {
-            errorCorreo.textContent = "No existe un usuario registrado.";
-            return;
-        }
-
-        const usuario = JSON.parse(usuarioGuardado);
-
-        if (correo !== usuario.correo || contrasena !== usuario.contrasena) {
-            errorCorreo.textContent = "El correo o la contraseña son incorrectos.";
-            return;
-        }
-
-        localStorage.setItem("sesionActiva", "true");
-        alert("Inicio de sesión exitoso.");
-        window.location.href = "index.html";
+    if (!formularioValido) {
+        return;
     }
+
+    const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+    const usuario = usuarios.find(function(item) {
+        return item.correo === correo && item.contrasena === contrasena;
+    });
+
+    if (!usuario) {
+        errorCorreo.textContent = "El correo o la contraseña son incorrectos.";
+        return;
+    }
+
+    localStorage.setItem("usuarioRegistrado", JSON.stringify(usuario));
+    localStorage.setItem("sesionActiva", "true");
+
+    alert("Inicio de sesión exitoso.");
+    window.location.href = "index.html";
 });

@@ -9,7 +9,6 @@
 <body>
     <header>
         <h1>Administración HuertoHogar</h1>
-
         <nav>
             <ul>
                <li><a href="index.html">Inicio</a> </li>
@@ -21,6 +20,7 @@
                <li><a href="registro.html">Registro</a> </li>
                <li><a href="carrito.html">Carrito</a> </li>
                <li><a href="administracion.html">Administración</a> </li>
+               <li><a href="perfil.html">Mi perfil</a> </li>
             </ul>
         </nav>
     </header>
@@ -31,33 +31,33 @@
 
             <form id="formulario-producto">
                 <div>
-                    <label for="codigo-producto">Código del producto:</label>
-                    <input type="text" id="codigo-producto" maxlength="50" required>
+                    <label for="codigo-producto">Código:</label>
+                    <input type="text" id="codigo-producto" required>
                 </div>
 
                 <div>
-                    <label for="nombre-producto">Nombre del producto:</label>
-                    <input type="text" id="nombre-producto" maxlength="100" required>
+                    <label for="nombre-producto">Nombre:</label>
+                    <input type="text" id="nombre-producto" required>
                 </div>
 
                 <div>
                     <label for="descripcion-producto">Descripción:</label>
-                    <textarea id="descripcion-producto" maxlength="500"></textarea>
+                    <textarea id="descripcion-producto"></textarea>
                 </div>
 
                 <div>
                     <label for="precio-producto">Precio:</label>
-                    <input type="number" id="precio-producto" min="0" step="0.01" required>
+                    <input type="number" id="precio-producto" min="0" required>
                 </div>
 
                 <div>
                     <label for="stock-producto">Stock:</label>
-                    <input type="number" id="stock-producto" min="0" step="1" required>
+                    <input type="number" id="stock-producto" min="0" required>
                 </div>
 
                 <div>
                     <label for="stock-critico-producto">Stock crítico:</label>
-                    <input type="number" id="stock-critico-producto" min="0" step="1">
+                    <input type="number" id="stock-critico-producto" min="0" value="0">
                 </div>
 
                 <div>
@@ -66,18 +66,148 @@
                         <option value="">Selecciona una categoría</option>
                         <option value="Frutas Frescas">Frutas Frescas</option>
                         <option value="Verduras Orgánicas">Verduras Orgánicas</option>
-                        <option value="Productos Orgánicos">Productos Orgánicos</option>
                         <option value="Productos Lácteos">Productos Lácteos</option>
+                        <option value="Productos Orgánicos">Productos Orgánicos</option>
                     </select>
                 </div>
 
-                <button type="submit">Agregar producto</button>
+                <div>
+                    <label for="imagen-producto">Imagen:</label>
+                    <input type="text" id="imagen-producto" placeholder="Ejemplo: img/manzanas.jpg">
+                </div>
+
+                <button type="submit" id="boton-guardar-producto">Agregar producto</button>
+                <button type="button" id="boton-cancelar-edicion" hidden>Cancelar edición</button>
             </form>
         </section>
 
         <section>
             <h2>Productos registrados</h2>
             <div id="lista-administracion"></div>
+        </section>
+
+                <div id="seccion-usuarios">
+            <section>
+                <h2>Gestión de usuarios</h2>
+
+                <form id="formulario-usuario">
+                    <div>
+                        <label for="run-usuario">RUN:</label>
+                        <input
+                            type="text"
+                            id="run-usuario"
+                            placeholder="Ejemplo: 123456789"
+                            maxlength="9"
+                            required
+                        >
+                    </div>
+
+                    <div>
+                        <label for="nombre-usuario">Nombre:</label>
+                        <input
+                            type="text"
+                            id="nombre-usuario"
+                            maxlength="50"
+                            required
+                        >
+                    </div>
+
+                    <div>
+                        <label for="apellidos-usuario">Apellidos:</label>
+                        <input
+                            type="text"
+                            id="apellidos-usuario"
+                            maxlength="100"
+                            required
+                        >
+                    </div>
+
+                    <div>
+                        <label for="correo-usuario">Correo electrónico:</label>
+                        <input
+                            type="email"
+                            id="correo-usuario"
+                            maxlength="100"
+                            placeholder="usuario@duoc.cl"
+                            required
+                        >
+                    </div>
+
+                    <div>
+                        <label for="fecha-nacimiento-usuario">Fecha de nacimiento:</label>
+                        <input
+                            type="date"
+                            id="fecha-nacimiento-usuario"
+                        >
+                    </div>
+
+                    <div>
+                        <label for="contrasena-usuario">Contraseña:</label>
+                        <input
+                            type="password"
+                            id="contrasena-usuario"
+                            minlength="4"
+                            maxlength="10"
+                            required
+                        >
+                    </div>
+
+                    <div>
+                        <label for="tipo-usuario">Tipo de usuario:</label>
+                        <select id="tipo-usuario" required>
+                            <option value="">Selecciona un tipo</option>
+                            <option value="Administrador">Administrador</option>
+                            <option value="Cliente">Cliente</option>
+                            <option value="Vendedor">Vendedor</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="region-usuario">Región:</label>
+                        <select id="region-usuario" required>
+                            <option value="">Selecciona una región</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="comuna-usuario">Comuna:</label>
+                        <select id="comuna-usuario" required>
+                            <option value="">Selecciona una comuna</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="direccion-usuario">Dirección:</label>
+                        <textarea
+                            id="direccion-usuario"
+                            maxlength="300"
+                            required
+                        ></textarea>
+                    </div>
+
+                    <button type="submit" id="boton-guardar-usuario">
+                        Agregar usuario
+                    </button>
+
+                    <button
+                        type="button"
+                        id="boton-cancelar-edicion-usuario"
+                        hidden
+                    >
+                        Cancelar edición
+                    </button>
+                </form>
+            </section>
+
+            <section>
+                <h2>Usuarios registrados</h2>
+                <div id="lista-usuarios"></div>
+            </section>
+        </div>
+
+        <section>
+            <h2>Usuarios registrados</h2>
+            <div id="lista-usuarios"></div>
         </section>
     </main>
 
