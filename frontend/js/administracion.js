@@ -1,3 +1,16 @@
+if (!usuarioPuedeAcceder(["Administrador", "Vendedor"])) {
+    alert("No tienes permisos para acceder a esta sección.");
+    window.location.href = "index.html";
+}
+
+const usuarioActual = usuarioTieneSesion()
+    ? obtenerUsuarioActual()
+    : null;
+
+if (usuarioActual && usuarioActual.tipo === "Vendedor") {
+    document.getElementById("seccion-usuarios").hidden = true;
+}
+
 const formularioProducto = document.getElementById("formulario-producto");
 const listaAdministracion = document.getElementById("lista-administracion");
 const botonGuardar = document.getElementById("boton-guardar-producto");
@@ -79,6 +92,10 @@ formularioProducto.addEventListener("submit", function(evento) {
 
     if (codigo === "" || nombre === "" || precio < 0 || stock < 0 || categoria === "") {
         alert("Completa correctamente los campos obligatorios.");
+        return;
+    }
+    if (stockCritico > stock) {
+        alert("El stock crítico no puede ser mayor que el stock disponible.");
         return;
     }
 
@@ -272,6 +289,7 @@ formularioUsuario.addEventListener("submit", function(evento) {
     const apellidos = document.getElementById("apellidos-usuario").value.trim();
     const correo = document.getElementById("correo-usuario").value.trim().toLowerCase();
     const fechaNacimiento = document.getElementById("fecha-nacimiento-usuario").value;
+    const contrasena = document.getElementById("contrasena-usuario").value;
     const tipo = document.getElementById("tipo-usuario").value;
     const region = document.getElementById("region-usuario").value;
     const comuna = document.getElementById("comuna-usuario").value;
@@ -294,6 +312,11 @@ formularioUsuario.addEventListener("submit", function(evento) {
 
     if (!validarCorreo(correo) || correo.length > 100) {
         alert("El correo debe ser @duoc.cl, @profesor.duoc.cl o @gmail.com.");
+        return;
+    }
+
+    if (contrasena.length < 4 || contrasena.length > 10) {
+        alert("La contraseña debe tener entre 4 y 10 caracteres.");
         return;
     }
 
@@ -325,7 +348,8 @@ formularioUsuario.addEventListener("submit", function(evento) {
         tipo: tipo,
         region: region,
         comuna: comuna,
-        direccion: direccion
+        direccion: direccion,
+        contrasena: contrasena
     };
 
     if (indiceEdicionUsuario === -1) {

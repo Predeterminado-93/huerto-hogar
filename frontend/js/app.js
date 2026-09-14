@@ -220,3 +220,64 @@ function mostrarProductos() {
 }
 
 mostrarProductos();
+
+function obtenerUsuarioActual() {
+    return JSON.parse(localStorage.getItem("usuarioRegistrado"));
+}
+
+function obtenerRolActual() {
+    const usuario = obtenerUsuarioActual();
+
+    return usuario ? usuario.tipo : null;
+}
+
+function usuarioTieneSesion() {
+    return localStorage.getItem("sesionActiva") === "true";
+}
+
+function cerrarSesion() {
+    localStorage.removeItem("sesionActiva");
+    localStorage.removeItem("usuarioRegistrado");
+    window.location.href = "login.html";
+}
+
+function usuarioPuedeAcceder(rolesPermitidos) {
+    if (!usuarioTieneSesion()) {
+        return false;
+    }
+
+    const rolActual = obtenerRolActual();
+
+    return rolesPermitidos.includes(rolActual);
+}
+
+function configurarMenuPorRol() {
+    const usuario = usuarioTieneSesion()
+    ? obtenerUsuarioActual()
+    : null;
+    const rol = usuario ? usuario.tipo : null;
+
+    const enlacesAdministracion = document.querySelectorAll('a[href="administracion.html"]');
+    const enlacesLogin = document.querySelectorAll('a[href="login.html"]');
+    const enlacesRegistro = document.querySelectorAll('a[href="registro.html"]');
+    const enlacesPerfil = document.querySelectorAll('a[href="perfil.html"]');
+
+    enlacesAdministracion.forEach(function(enlace) {
+        enlace.parentElement.hidden = !usuario
+            || (rol !== "Administrador" && rol !== "Vendedor");
+    });
+
+    enlacesLogin.forEach(function(enlace) {
+        enlace.parentElement.hidden = usuario !== null;
+    });
+
+    enlacesRegistro.forEach(function(enlace) {
+        enlace.parentElement.hidden = usuario !== null;
+    });
+
+    enlacesPerfil.forEach(function(enlace) {
+        enlace.parentElement.hidden = usuario === null;
+    });
+}
+
+configurarMenuPorRol();
